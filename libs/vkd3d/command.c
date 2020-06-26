@@ -2078,7 +2078,7 @@ static void d3d12_command_list_clear_attachment_deferred(struct d3d12_command_li
 
     /* If necessary, combine with previous clear so that e.g. a
      * depth-only clear does not override a stencil-only clear. */
-    clear_state->attachment_mask |= 1u << attachment_idx;
+    clear_state->attachment_mask |= 1llu << attachment_idx;
     attachment->aspect_mask |= clear_aspects;
 
     if (clear_aspects & VK_IMAGE_ASPECT_COLOR_BIT)
@@ -2101,8 +2101,8 @@ static bool d3d12_command_list_has_render_pass_rtv_clear(struct d3d12_command_li
     graphics = &list->state->graphics;
 
     return attachment_idx < graphics->rt_count &&
-            !(graphics->null_attachment_mask & (1 << attachment_idx)) &&
-            (list->clear_state.attachment_mask & (1 << attachment_idx));
+            !(graphics->null_attachment_mask & (1llu << attachment_idx)) &&
+            (list->clear_state.attachment_mask & (1llu << attachment_idx));
 }
 
 static bool d3d12_command_list_has_depth_stencil_view(struct d3d12_command_list *list);
@@ -2172,7 +2172,7 @@ static void d3d12_command_list_emit_render_pass_clears(struct d3d12_command_list
     for (i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; i++)
     {
         if (d3d12_command_list_has_render_pass_rtv_clear(list, i))
-            attachment_mask |= 1 << i;
+            attachment_mask |= 1llu << i;
     }
 
     if (d3d12_command_list_has_render_pass_dsv_clear(list))
